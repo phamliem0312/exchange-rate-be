@@ -1,0 +1,60 @@
+{
+    "fields": {
+        "name": {
+            "type": "varchar"
+        },
+        "creditInsCode": {
+            "type": "varchar",
+            "maxLength": 24
+        },
+        "creditInsName": {
+            "type": "varchar"
+        },
+        "currency": {
+            "type": "varchar",
+            "options": [
+                "USD",
+                "EUR",
+                "GBP",
+                "JPY",
+                "AUD",
+                "CAD",
+                "CHF",
+                "CNY",
+                "SEK",
+                "NZD"
+            ]
+        },
+        "exchangeRate": {
+            "type": "float"
+        },
+        "createdAt": {
+            "type": "datetime",
+            "readOnly": true
+        },
+        "createdBy": {
+            "type": "link",
+            "readOnly": true,
+            "view": "views/fields/user"
+        }
+    },
+    "links": {
+        "createdBy": {
+            "type": "belongsTo",
+            "entity": "User"
+        }
+    },
+    "collection": {
+        "orderBy": "createdAt",
+        "order": "desc",
+        "textFilterFields": ["creditInsName", "currency"]
+    },
+    "indexes": {
+        "currency": {
+            "columns": ["currency", "deleted"]
+        },
+        "creditInsCode": {
+            "columns": ["creditInsCode", "currency", "deleted"]
+        }
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "entity": true,
+    "layouts": true,
+    "tab": true,
+    "acl": false,
+    "aclPortal": false,
+    "module": "ExchangeRate",
+    "customizable": true,
+    "stream": false,
+    "stars": false,
+    "importable": true,
+    "notifications": false,
+    "object": false,
+    "hasPersonalData": false,
+    "duplicateCheckFieldList": ["code"]
+}

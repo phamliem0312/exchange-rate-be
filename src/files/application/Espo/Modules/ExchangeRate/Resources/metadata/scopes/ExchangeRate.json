@@ -1,0 +1,15 @@
+{
+    "entity": true,
+    "layouts": true,
+    "tab": true,
+    "acl": true,
+    "aclPortal": false,
+    "module": "ExchangeRate",
+    "customizable": true,
+    "stream": false,
+    "stars": false,
+    "importable": true,
+    "notifications": false,
+    "object": false,
+    "hasPersonalData": false
+}

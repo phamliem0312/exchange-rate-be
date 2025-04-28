@@ -1,0 +1,39 @@
+{
+    "fields": {
+        "name": {
+            "type": "varchar"
+        },
+        "code": {
+            "type": "varchar",
+            "maxLength": 24
+        },
+        "createdAt": {
+            "type": "datetime",
+            "readOnly": true
+        },
+        "createdBy": {
+            "type": "link",
+            "readOnly": true,
+            "view": "views/fields/user"
+        }
+    },
+    "links": {
+        "createdBy": {
+            "type": "belongsTo",
+            "entity": "User"
+        }
+    },
+    "collection": {
+        "orderBy": "name",
+        "order": "asc",
+        "textFilterFields": ["name", "code"]
+    },
+    "indexes": {
+        "name": {
+            "columns": ["name"]
+        },
+        "code": {
+            "columns": ["code"]
+        }
+    }
+}
