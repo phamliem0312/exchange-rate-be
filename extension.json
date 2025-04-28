@@ -1,0 +1,14 @@
+{
+    "module": "exchange-rate",
+    "name": "Exchange rate",
+    "description": "Exchange rate module",
+    "author": "phamliem0312",
+    "bundled": true,
+    "acceptableVersions": [
+        ">=7.3.0"
+    ],
+    "php": [
+        ">=7.2"
+    ],
+    "scripts": []
+}
