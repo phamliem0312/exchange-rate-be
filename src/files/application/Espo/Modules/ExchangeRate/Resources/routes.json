@@ -1,3 +1,29 @@
 [
-    
+    {
+        "route": "/ExchangeRate/bestExchangeRate",
+        "method": "get",
+        "params": {
+            "controller": "ExchangeRate",
+            "action": "bestExchangeRate"
+        },
+        "noAuth": true
+    },
+    {
+        "route": "/ExchangeRate/convertExchangeRate",
+        "method": "get",
+        "params": {
+            "controller": "ExchangeRate",
+            "action": "convertExchangeRate"
+        },
+        "noAuth": true
+    },
+    {
+        "route": "/ExchangeRate/exchangeRateList",
+        "method": "get",
+        "params": {
+            "controller": "ExchangeRate",
+            "action": "exchangeRateList"
+        },
+        "noAuth": true
+    }
 ]

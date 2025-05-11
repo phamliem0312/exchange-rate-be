@@ -1,0 +1,8 @@
+{
+    "Home": {
+        "params": {
+            "controller": "exchange-rate:controllers/exchange-rate-web",
+            "action": "webView"
+        }
+    }
+}

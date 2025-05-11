@@ -1,0 +1,7 @@
+{
+    "cssList": [
+        "__APPEND__",
+        "client/modules/exchange-rate/css/style.css",
+        "client/modules/exchange-rate/css/vars.css"
+    ]
+}
