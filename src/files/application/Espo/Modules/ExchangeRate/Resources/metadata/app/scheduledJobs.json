@@ -1,0 +1,5 @@
+{
+    "SyncExchangeRate": {
+        "jobClassName": "Espo\\Modules\\ExchangeRate\\Jobs\\SyncExchangeRate"
+    }
+}

@@ -11,13 +11,14 @@ class ExchangeRate extends Record
 {
     public function getActionBestExchangeRate(Request $request): stdClass
     {
-        $currency = $request->getQueryParam('currency');
+        $fromCurrency = $request->getQueryParam('fromCurrency');
+        $toCurrency = $request->getQueryParam('toCurrency');
 
-        if (!$currency) {
+        if (!$fromCurrency || !$toCurrency) {
             throw new BadRequest('Currency is required');
         }
 
-        $exchangeRate = $this->getRecordService()->getBestExchangeRate($currency);
+        $exchangeRate = $this->getRecordService()->getBestExchangeRate($fromCurrency, $toCurrency);
 
         return (object) [
             'exchangeRate' => $exchangeRate['rate'],
@@ -28,6 +29,7 @@ class ExchangeRate extends Record
     public function getActionConvertExchangeRate(Request $request): float
     {
         $fromCurrency = $request->getQueryParam('fromCurrency');
+        $toCurrency = $request->getQueryParam('toCurrency');
         $amount = $request->getQueryParam('amount');
         $bankCode = $request->getQueryParam('bankCode');
 
@@ -35,15 +37,11 @@ class ExchangeRate extends Record
             throw new BadRequest('From currency is required');
         }
 
-        if (!$amount) {
-            throw new BadRequest('amount is required');
-        }
-
         if (!$bankCode) {
             throw new BadRequest('Bank code is required');
         }
 
-        return $this->getRecordService()->convertExchangeRate($fromCurrency, $amount, $bankCode);
+        return $this->getRecordService()->convertExchangeRate($fromCurrency, $toCurrency, $amount, $bankCode);
     }
 
     public function getActionExchangeRateList(Request $request): stdClass

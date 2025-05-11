@@ -25,5 +25,14 @@
             "action": "exchangeRateList"
         },
         "noAuth": true
+    },
+    {
+        "route": "/Test/exchangeRate",
+        "method": "get",
+        "params": {
+            "controller": "Test",
+            "action": "exchangeRate"
+        },
+        "noAuth": true
     }
 ]

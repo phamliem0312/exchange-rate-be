@@ -8,14 +8,15 @@ use PDO;
 
 class ExchangeRate extends Service
 {
-    public function getBestExchangeRate(string $currency): array
+    public function getBestExchangeRate(string $fromCurrency, string $toCurrency): array
     {
         $subQuery = $this->entityManager
             ->getQueryBuilder()
             ->select('MIN:(exchangeRate)')
             ->from('ExchangeRate')
             ->where([
-                'currency' => $currency,
+                'fromCurrency' => $fromCurrency,
+                'toCurrency' => $toCurrency,
             ])
             ->build();
 
@@ -40,14 +41,15 @@ class ExchangeRate extends Service
         ];
     }
 
-    public function convertExchangeRate(string $fromCurrency, float $amount, string $bankCode): float
+    public function convertExchangeRate(string $fromCurrency, string $toCurrency, float $amount, string $bankCode): float
     {
         $query = $this->entityManager
             ->getQueryBuilder()
             ->select('exchangeRate')
             ->from('ExchangeRate')
             ->where([
-                'currency' => $fromCurrency,
+                'fromCurrency' => $fromCurrency,
+                'toCurrency' => $toCurrency,
                 'creditInsCode' => $bankCode,
             ])
             ->build();
