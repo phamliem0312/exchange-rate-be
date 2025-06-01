@@ -2,8 +2,10 @@
 
 namespace Espo\Modules\ExchangeRate\Services;
 
+use Carbon\Carbon;
 use Espo\Core\Exceptions\NotFound;
 use Espo\Core\Record\Service;
+use Espo\Core\Utils\DateTime;
 use PDO;
 
 class ExchangeRate extends Service
@@ -17,6 +19,7 @@ class ExchangeRate extends Service
             ->where([
                 'fromCurrency' => $fromCurrency,
                 'toCurrency' => $toCurrency,
+                'exchangeRate>' => 0,
             ])
             ->build();
 
@@ -63,22 +66,32 @@ class ExchangeRate extends Service
         return $row->exchangeRate * $amount;
     }
 
-    public function exchangeRateList(): array
+    public function exchangeRateList(string $currency, $limit): array
     {
 
         $query = $this->entityManager
             ->getQueryBuilder()
-            ->select(['creditInsCode', 'exchangeRate'])
+            ->select(['creditInsCode', 'exchangeRate', 'creditInsName', 'createdAt'])
             ->from('ExchangeRate')
+            ->where([
+                'fromCurrency' => $currency,
+                'exchangeRate>' => 0
+            ])
             ->order('exchangeRate', 'ASC')
+            ->limit(0, (int) $limit)
             ->build();
 
         $rows = $this->entityManager->getQueryExecutor()->execute($query)->fetchAll(PDO::FETCH_ASSOC);
 
-        return array_map(function ($row) {
+        $fee = 0;
+
+        return array_map(function ($row) use($fee){
             return [
-                'bankCode' => $row['creditInsCode'],
-                'exchangeRate' => $row['exchangeRate'],
+                'name' => $row['creditInsName'],
+                'rate' => $row['exchangeRate'],
+                'fee' => $fee,
+                'received' => $row['exchangeRate'] - $fee,
+                'updatedAt' => Carbon::parse($row['createdAt'])->addHours(7)->format(DateTime::SYSTEM_DATE_TIME_FORMAT)
             ];
         }, $rows);
     }

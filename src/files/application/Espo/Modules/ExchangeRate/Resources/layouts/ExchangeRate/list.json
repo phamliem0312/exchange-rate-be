@@ -1,0 +1,30 @@
+[
+    {
+        "name": "name",
+        "link": true
+    },
+    {
+        "name": "creditInsCode",
+        "width": 16
+    },
+    {
+        "name": "creditInsName",
+        "width": 16
+    },
+    {
+        "name": "fromCurrency",
+        "width": 16
+    },
+    {
+        "name": "toCurrency",
+        "width": 16
+    },
+    {
+        "name": "exchangeRate",
+        "width": 16
+    },
+    {
+        "name": "createdAt",
+        "width": 16
+    }
+]

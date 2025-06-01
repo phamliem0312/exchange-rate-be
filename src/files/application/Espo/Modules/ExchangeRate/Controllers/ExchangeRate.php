@@ -46,7 +46,10 @@ class ExchangeRate extends Record
 
     public function getActionExchangeRateList(Request $request): stdClass
     {
-        $list = $this->getRecordService()->exchangeRateList();
+        $fromCurrency = $request->getQueryParam('fromCurrency');
+        $limit = $request->getQueryParam('limit');
+
+        $list = $this->getRecordService()->exchangeRateList($fromCurrency, $limit);
 
         return (object) [
             'list' => $list,

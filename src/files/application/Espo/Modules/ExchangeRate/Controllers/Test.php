@@ -2,6 +2,7 @@
 
 namespace Espo\Modules\ExchangeRate\Controllers;
 
+use Espo\Core\Api\Request;
 use Espo\Modules\ExchangeRate\Tools\SyncExchangeRate;
 
 class Test
@@ -10,8 +11,18 @@ class Test
         private SyncExchangeRate $syncExchangeRate,
     ) {}
 
-    public function getActionExchangeRate()
+    public function getActionExchangeRate(Request $request): array
     {
-        return $this->syncExchangeRate->getVietcombankExchangeRate();
+        $bank = $request->getQueryParam('bank');
+        return $this->syncExchangeRate->getBankExchangeRate($bank);
+    }
+
+    public function getActionRunJob(Request $request)
+    {
+        $this->syncExchangeRate->sync();
+
+        return [
+            'success' => true,
+        ];
     }
 }
