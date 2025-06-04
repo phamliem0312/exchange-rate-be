@@ -841,7 +841,7 @@ class SyncExchangeRate
             $cols = $row->getElementsByTagName('td');
             if ($cols->length === 5) {
                 $currency = trim($cols->item(0)->textContent);
-                $sell = trim($cols->item(2)->textContent);
+                $sell = trim($cols->item(3)->textContent);
                 $data[] = [
                     'rate' => (float) str_replace([','], [''], $sell),
                     'fromCurrency' => $currency,
@@ -890,7 +890,7 @@ class SyncExchangeRate
 
             $cols = $row->getElementsByTagName('td');
             $currency = trim($cols->item(1)->textContent);
-            $sell = trim($cols->item(3)->textContent);
+            $sell = trim($cols->item(4)->textContent);
             $data[] = [
                 'rate' => (float) str_replace([','], [''], $sell),
                 'fromCurrency' => substr($currency, 0 , 3),
@@ -932,7 +932,7 @@ class SyncExchangeRate
             $cols = $row->getElementsByTagName('td');
             if ($cols->length === 5) {
                 $currency = trim($cols->item(0)->textContent);
-                $sell = trim($cols->item(3)->textContent);
+                $sell = trim($cols->item(4)->textContent);
                 $data[] = [
                     'rate' => (float) str_replace([','], [''], $sell),
                     'fromCurrency' => $currency,
@@ -971,7 +971,7 @@ class SyncExchangeRate
             $cols = $row->getElementsByTagName('td');
             if ($cols->length === 5) {
                 $currency = trim($cols->item(0)->textContent);
-                $sell = trim($cols->item(2)->textContent);
+                $sell = trim($cols->item(4)->textContent);
                 $data[] = [
                     'rate' => (float) str_replace([','], [''], $sell),
                     'fromCurrency' => $currency,
@@ -1010,7 +1010,7 @@ class SyncExchangeRate
             $cols = $row->getElementsByTagName('td');
             if ($cols->length === 4) {
                 $currency = substr(trim($cols->item(0)->textContent), 0 , 3);
-                $sell = trim($cols->item(2)->textContent);
+                $sell = trim($cols->item(3)->textContent);
                 $data[] = [
                     'rate' => (float) str_replace(['.', ','], ['', '.'], $sell),
                     'fromCurrency' => $currency,
@@ -1049,7 +1049,7 @@ class SyncExchangeRate
             $cols = $row->getElementsByTagName('td');
             if ($cols->length === 5) {
                 $currency = substr(trim($cols->item(0)->textContent), 0 , 3);
-                $sell = trim($cols->item(2)->textContent);
+                $sell = trim($cols->item(4)->textContent);
                 $data[] = [
                     'rate' => (float) str_replace([','], [''], $sell),
                     'fromCurrency' => $currency,
@@ -1091,7 +1091,7 @@ class SyncExchangeRate
             $cols = $row->getElementsByTagName('td');
             preg_match('/\((.*?)\)/', trim($th->item(0)->textContent), $matches);
             $currency = $matches[1];
-            $sell = trim($cols->item(1)->textContent);
+            $sell = trim($cols->item(4)->textContent);
             $data[] = [
                 'rate' => (float) str_replace(['.', ','], ['', '.'], $sell),
                 'fromCurrency' => $currency,
@@ -1170,7 +1170,7 @@ class SyncExchangeRate
             $cols = $row->getElementsByTagName('td');
             if ($cols->length == 4) {
                 $currency = trim($cols->item(0)->textContent);
-                $sell = trim($cols->item(2)->textContent);
+                $sell = trim($cols->item(3)->textContent);
                 $data[] = [
                     'rate' => (float) $sell,
                     'fromCurrency' => $currency,
