@@ -276,7 +276,7 @@ class SyncExchangeRate
         $response = curl_exec($ch);
 
         if (curl_errno($ch)) {
-            $GLOBALS['log']->debug('Lỗi cURL: ' . curl_error($ch));
+            $GLOBALS['log']->info('Lỗi cURL: ' . curl_error($ch));
 
             return [];
         }
@@ -309,12 +309,11 @@ class SyncExchangeRate
         $date = Carbon::now()->addHours(7)->format('Y-m-d');
         $applyDateResponse = $this->fetch("https://www.vietinbank.vn/ca-nhan/ty-gia-khcn", 'POST', json_encode([$date]), [
             'contentType' => 'text/plain;charset=UTF-8',
-            'next-action' => 'b3a73b3de02f0ecdf0000c6e8065d49f40078b5e',
+            'next-action' => 'e4d951bbcfdef7e590919ae33e39d2a200f3d9e7',
             'user-agent' => 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Mobile Safari/537.36 Edg/134.0.0.0'
         ]);
         preg_match_all('/"apply_date":"([^"]+)"/', $applyDateResponse, $matches);
         $applyDate = $matches[1][0] ?? null;
-        $GLOBALS['log']->debug('Apply Date: ' . $applyDate);
         $url = 'https://www.vietinbank.vn/ca-nhan/ty-gia-khcn';
 
         // Payload bạn đã mô tả
@@ -353,7 +352,7 @@ class SyncExchangeRate
             return [];
         }
 
-        $exchangeRateList = json_decode(explode('1:', $response)[1]) ?? [];
+        $exchangeRateList = json_decode('[{' . explode('1:[{', $response)[1]) ?? [];
 
         $data = [];
 
@@ -603,7 +602,7 @@ class SyncExchangeRate
 
         $response = $this->fetch($url, 'GET', [], [
             'Accept-Encoding' => 'gzip, deflate, br',
-            'user-agent' => 'PostmanRuntime/7.44.0'
+            'user-agent' => 'PostmanRuntime/7.44.0',
         ]);
 
         if (!$response) {
@@ -1253,7 +1252,7 @@ class SyncExchangeRate
         $response = curl_exec($ch);
 
         if (curl_errno($ch)) {
-            $GLOBALS['log']->debug('Lỗi cURL: ' . curl_error($ch));
+            $GLOBALS['log']->info('Lỗi cURL: ' . curl_error($ch));
 
             return null;
         }
@@ -1262,13 +1261,13 @@ class SyncExchangeRate
 
         curl_close($ch);
 
-        $GLOBALS['log']->debug('URL: ' . $url);
+        $GLOBALS['log']->info('URL: ' . $url);
 
         if ($httpCode !== 200) {
-            $GLOBALS['log']->debug('Lỗi HTTP: ' . $httpCode);
-            $GLOBALS['log']->debug('Data: ' . $response);
+            $GLOBALS['log']->info('Lỗi HTTP: ' . $httpCode);
             return null;
         }
+        $GLOBALS['log']->info('Data: ' . $response);
 
         return json_decode($response, true) ? json_decode($response, true) : $response;
     }
