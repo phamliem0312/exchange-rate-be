@@ -105,7 +105,7 @@ class SyncExchangeRate
         foreach ($exchangeRateList as $exchangeRate) {
             if (in_array($exchangeRate['currencyCode'], self::CURRENCY_LIST)) {
                 $data[] = [
-                    'rate' => (float) $exchangeRate['transfer'],
+                    'rate' => (float) $exchangeRate['sell'],
                     'fromCurrency' => $exchangeRate['currencyCode'],
                     'toCurrency' => 'VND',
                     'bankCode' => 'VCB',
@@ -134,7 +134,7 @@ class SyncExchangeRate
 
         foreach ($exchangeRateList as $exchangeRate) {
             if (in_array($exchangeRate['currency'], self::CURRENCY_LIST)) {
-                $rate = floatval(str_replace(',', '', $exchangeRate['muaCk']));
+                $rate = floatval(str_replace(',', '', $exchangeRate['banCk']));
                 $data[] = [
                     'rate' => $rate,
                     'fromCurrency' => $exchangeRate['currency'],
@@ -165,7 +165,7 @@ class SyncExchangeRate
         foreach ($exchangeRateList as $exchangeRate) {
             if (in_array($exchangeRate['sourceCurrency'], self::CURRENCY_LIST)) {
                 $data[] = [
-                    'rate' => (float) $exchangeRate['bidRateCK'],
+                    'rate' => (float) $exchangeRate['askRate'],
                     'fromCurrency' => $exchangeRate['sourceCurrency'],
                     'toCurrency' => 'VND',
                     'bankCode' => 'TCB',
@@ -199,7 +199,7 @@ class SyncExchangeRate
 
         foreach ($exchangeRateList as $exchangeRate) {
             if (in_array($exchangeRate['CCY'], self::CURRENCY_LIST)) {
-                $rate = floatval(str_replace(',', '', $exchangeRate['TRANSFER_BUY_RATE']));
+                $rate = floatval(str_replace(',', '', $exchangeRate['TRANSFER_SELL_RATE']));
                 $data[] = [
                     'rate' => $rate,
                     'fromCurrency' => $exchangeRate['CCY'],
@@ -228,7 +228,7 @@ class SyncExchangeRate
 
         foreach ($exchangeRateList as $exchangeRate) {
             if (in_array($exchangeRate['CurrencyType'], self::CURRENCY_LIST)) {
-                $rate = $exchangeRate['Transfer'];
+                $rate = $exchangeRate['Sell'];
                 $data[] = [
                     'rate' => $rate,
                     'fromCurrency' => $exchangeRate['CurrencyType'],
@@ -291,7 +291,7 @@ class SyncExchangeRate
 
         foreach ($exchangeRateList as $exchangeRate) {
             if (in_array($exchangeRate['currencyCode'], self::CURRENCY_LIST)) {
-                $rate = $exchangeRate['buy_bank_transfer'];
+                $rate = $exchangeRate['sell_bank_transfer'];
                 $data[] = [
                     'rate' => $rate,
                     'fromCurrency' => $exchangeRate['currencyCode'],
@@ -360,7 +360,7 @@ class SyncExchangeRate
         foreach ($exchangeRateList as $exchangeRate) {
             $exchangeRate = (array) $exchangeRate;
             if (in_array($exchangeRate['currency_code'], self::CURRENCY_LIST)) {
-                $rate = $exchangeRate['transfer_rate'];
+                $rate = $exchangeRate['sell_rate'];
                 $data[] = [
                     'rate' => $rate,
                     'fromCurrency' => $exchangeRate['currency_code'],
@@ -391,7 +391,7 @@ class SyncExchangeRate
         foreach ($exchangeRateList as $exchangeRate) {
             if (
                 in_array($exchangeRate['exchangeCurrency'], self::CURRENCY_LIST)
-                && $exchangeRate['dealType'] == 'BID'
+                && $exchangeRate['dealType'] == 'ASK'
                 && $exchangeRate['instrumentType'] == 'TRANSFER'
             ) {
                 $rate = $exchangeRate['exchangeRate'];
@@ -437,7 +437,7 @@ class SyncExchangeRate
             $cells = $row->getElementsByTagName('td');
             if ($cells->length >= 5) {
                 $currency = trim($cells->item(0)->textContent);
-                $sellTransfer = str_replace(',', '', trim($cells->item(2)->textContent));
+                $sellTransfer = str_replace(',', '', trim($cells->item(3)->textContent));
 
                 if (strpos($currency, 'USD (<50$)') !== false) {
                     $exchangeRateList[] = [
@@ -487,7 +487,7 @@ class SyncExchangeRate
 
         foreach ($exchangeRateList as $exchangeRate) {
             if (in_array($exchangeRate['CCYCD'], self::CURRENCY_LIST)) {
-                $rate = (float) str_replace(',', '', $exchangeRate['TTBUYRT']) + ((float) str_replace(',', '', $exchangeRate['QUOTECNT']))/2;
+                $rate = (float) str_replace(',', '', $exchangeRate['TTSELLRT']);
                 $data[] = [
                     'rate' => $rate,
                     'fromCurrency' => $exchangeRate['CCYCD'],
@@ -521,7 +521,7 @@ class SyncExchangeRate
             }
             $currencyCode = substr($exchangeRate['code'], 0, 3);
             if (in_array($currencyCode, self::CURRENCY_LIST)) {
-                $rate = $exchangeRate['buyCk'];
+                $rate = $exchangeRate['sellCk'];
                 $data[] = [
                     'rate' => $rate,
                     'fromCurrency' => $currencyCode,
@@ -553,7 +553,7 @@ class SyncExchangeRate
 
         foreach ($exchangeRateList as $exchangeRate) {
             if (in_array($exchangeRate['currencyCode'], self::CURRENCY_LIST)) {
-                $rate = $exchangeRate['buyTransferVND'];
+                $rate = $exchangeRate['sellTransferVND'];
                 $data[] = [
                     'rate' => $rate,
                     'fromCurrency' => $exchangeRate['currencyCode'],
@@ -584,7 +584,7 @@ class SyncExchangeRate
 
         foreach ($exchangeRateList as $exchangeRate) {
             if (in_array($exchangeRate['ccycd'], self::CURRENCY_LIST)) {
-                $rate = (float) str_replace('.', '', $exchangeRate['buyremittance']);
+                $rate = (float) str_replace('.', '', $exchangeRate['sellremittance']);
                 $data[] = [
                     'rate' => $rate,
                     'fromCurrency' => $exchangeRate['ccycd'],
@@ -616,7 +616,7 @@ class SyncExchangeRate
 
         foreach ($exchangeRateList as $exchangeRate) {
             if (in_array($exchangeRate['Ccy'], self::CURRENCY_LIST)) {
-                $rate = $exchangeRate['TransferBuyRate'];
+                $rate = $exchangeRate['SaleRate'];
                 $data[] = [
                     'rate' => $rate,
                     'fromCurrency' => $exchangeRate['Ccy'],
@@ -646,7 +646,7 @@ class SyncExchangeRate
 
         foreach ($exchangeRateList as $exchangeRate) {
             if (in_array($exchangeRate['code'], self::CURRENCY_LIST)) {
-                $rate = (float) str_replace(',', '', $exchangeRate['bankBuy']);
+                $rate = (float) str_replace(',', '', $exchangeRate['bankSell']);
                 $data[] = [
                     'rate' => $rate,
                     'fromCurrency' => $exchangeRate['code'],
@@ -677,7 +677,7 @@ class SyncExchangeRate
 
         foreach ($exchangeRateList as $exchangeRate) {
             if (in_array($exchangeRate['currencyCode'], self::CURRENCY_LIST)) {
-                $rate = (float) str_replace(',', '', $exchangeRate['buyTransfer']);
+                $rate = (float) str_replace(',', '', $exchangeRate['saleTransfer']);
                 $data[] = [
                     'rate' => $rate,
                     'fromCurrency' => $exchangeRate['currencyCode'],
@@ -714,12 +714,12 @@ class SyncExchangeRate
 
         $rows = $tables->item(4)->getElementsByTagName('tbody')->item(0)->getElementsByTagName('tr');
         foreach ($rows as $i => $row) {
-            if ($i === 0) { continue; } // Bỏ qua hàng tiêu đề
+            if ($i === 0) { continue; }
 
             $cols = $row->getElementsByTagName('td');
             if ($cols->length >= 4) {
                 $currency = trim($cols->item(0)->textContent);
-                $sell = trim($cols->item(2)->textContent);
+                $sell = trim($cols->item(3)->textContent);
                 preg_match('/\((.*?)\)/', $currency, $matches);
                 $currencyCode = $matches[1] ?? null;
                 $data[] = [
@@ -763,7 +763,7 @@ class SyncExchangeRate
             $cols = $row->getElementsByTagName('td');
             if ($cols->length === 6) {
                 $currency = trim($cols->item(1)->textContent);
-                $sell = trim($cols->item(3)->textContent);
+                $sell = trim($cols->item(4)->textContent);
                 $data[] = [
                     'rate' => (float) str_replace(['.', ','], ['', '.'], $sell),
                     'fromCurrency' => $currency,
@@ -794,7 +794,7 @@ class SyncExchangeRate
 
         foreach ($exchangeRateList as $exchangeRate) {
             if (in_array($exchangeRate['currencyCode'], self::CURRENCY_LIST)) {
-                $rate = $exchangeRate['exRateResList'][0]['exRateListedChannelResList'][0]['exRateBuyTransferRes']['exRate'];
+                $rate = $exchangeRate['exRateResList'][0]['exRateDigitalChannelResList'][0]['exRateSellDigitalChannelRes']['exRate'];
                 $data[] = [
                     'rate' => $rate,
                     'fromCurrency' => $exchangeRate['currencyCode'],
