@@ -36,7 +36,9 @@ class SyncExchangeRate
         'HSBC',
         'PGbank',
         'VRbank',
-        //'Indovinabank', // Html
+        'Baovietbank',
+        'HongLeongbank',
+        'Indovinabank',
     ];
 
     const CURRENCY_LIST = [
@@ -543,6 +545,39 @@ class SyncExchangeRate
         return $data;
     }
 
+    public function getBaovietbankExchangeRate(): array
+    {
+        $date = Carbon::now()->addHours(7)->format('d/m/Y');
+
+        $url = "https://www.baovietbank.vn/AdTools/GetExChangeRate?dateTime=$date";
+
+        $response = $this->fetch($url, 'GET', [], [
+            'User-Agent' => 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Mobile Safari/537.36 Edg/134.0.0.0'
+        ]);
+
+        if (!$response) {
+            return [];
+        }
+
+        $exchangeRateList = $response ?? [];
+
+        $data = [];
+
+        foreach ($exchangeRateList as $exchangeRate) {
+            if (in_array($exchangeRate['listCurr']['code'], self::CURRENCY_LIST)) {
+                $rate = $exchangeRate['listEnq']['denomtranS_SELL_RATE'];
+                $data[] = [
+                    'rate' => $rate,
+                    'fromCurrency' => $exchangeRate['listCurr']['code'],
+                    'toCurrency' => 'VND',
+                    'bankCode' => 'Baovietbank',
+                ];
+            }
+        }
+
+        return $data;
+    }
+
     public function getMSBExchangeRate(): array
     {
         $latestDateTimeUrl = 'https://www.msb.com.vn/o/headless-ratecur/v1.0/latest-batch/1';
@@ -874,6 +909,61 @@ class SyncExchangeRate
         return $data;
     }
 
+    public function getHongLeongbankExchangeRate(): array
+    {
+        $url = "https://www.hlbank.com.vn/vi/global-markets/forex-rates.html";
+
+        $html = $this->fetch($url, 'GET', [], [
+            'User-Agent' => 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1 Edg/134.0.0.0'
+        ]);
+
+        if (!$html) {
+            return [];
+        }
+
+        libxml_use_internal_errors(true);
+        $dom = new \DOMDocument();
+        $dom->loadHTML($html);
+        libxml_clear_errors();
+
+        // Lấy bảng tỷ giá đầu tiên (ngoại tệ)
+        $tables = $dom->getElementsByTagName('table');
+
+        $data = [];
+
+        $rows = $tables->item(0)->getElementsByTagName('tbody')->item(0)->getElementsByTagName('tr');
+        foreach ($rows as $i => $row) {
+            if ($i === 0 || $i === 1 || $i === 3) { continue; }
+
+            $cols = $row->getElementsByTagName('td');
+            if ($i === 2) {
+            $sell = trim($cols->item(4)->getElementsByTagName('div')->item(1)->textContent);
+                $data[] = [
+                    'rate' => (float) str_replace([','], [''], $sell),
+                    'fromCurrency' => 'USD',
+                    'toCurrency' => 'VND',
+                    'bankCode' => 'SCB',
+                ];
+                continue;
+            }
+            if ($cols->length < 5) {
+                continue;
+            }
+            $currency = trim($cols->item(1)->getElementsByTagName('div')->item(1)->textContent);
+            preg_match('/\((.*?)\)/', $currency, $matches);
+            $currencyCode = $matches[1] ?? null;
+            $sell = trim($cols->item(4)->getElementsByTagName('div')->item(1)->textContent);
+            $data[] = [
+                'rate' => (float) str_replace([','], [''], $sell),
+                'fromCurrency' => $currencyCode,
+                'toCurrency' => 'VND',
+                'bankCode' => 'HongLeongbank',
+            ];
+        }
+
+        return $data;
+    }
+
     public function getSHBExchangeRate(): array
     {
         $now = Carbon::now()->addHours(7);
@@ -916,6 +1006,44 @@ class SyncExchangeRate
                 'fromCurrency' => substr($currency, 0 , 3),
                 'toCurrency' => 'VND',
                 'bankCode' => 'SHB',
+            ];
+        }
+
+        return $data;
+    }
+
+    public function getIndovinabankExchangeRate(): array
+    {
+        $url = "https://www.indovinabank.com.vn/vi/lookup/rates";
+
+        $html = $this->fetch($url, 'GET');
+
+        if (!$html) {
+            return [];
+        }
+
+        libxml_use_internal_errors(true);
+        $dom = new \DOMDocument();
+        $dom->loadHTML($html);
+        libxml_clear_errors();
+
+        // Lấy bảng tỷ giá đầu tiên (ngoại tệ)
+        $ul = $dom->getElementsByTagName('ul');
+
+        $data = [];
+
+        $lis = $ul->item(29)->getElementsByTagName('li');
+        foreach ($lis as $i => $row) {
+            if ($i === 1 || $i === 2) { continue; }
+
+            $cols = $row->getElementsByTagName('span');
+            $currency = trim($cols->item(1)->textContent);
+            $sell = trim($cols->item(9)->textContent);
+            $data[] = [
+                'rate' => (float) str_replace([','], [''], $sell),
+                'fromCurrency' => $currency,
+                'toCurrency' => 'VND',
+                'bankCode' => 'IndoVinabank',
             ];
         }
 
