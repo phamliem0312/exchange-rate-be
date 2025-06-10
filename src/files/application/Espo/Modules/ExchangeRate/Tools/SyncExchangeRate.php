@@ -733,7 +733,7 @@ class SyncExchangeRate
                 preg_match('/\((.*?)\)/', $currency, $matches);
                 $currencyCode = $matches[1] ?? null;
                 $data[] = [
-                    'rate' => (float) str_replace([',', '.'], [' ', ','], $sell),
+                    'rate' => (float) str_replace(['.', ','], ['', '.'], $sell),
                     'fromCurrency' => $currencyCode,
                     'toCurrency' => 'VND',
                     'bankCode' => 'NamAbank',
