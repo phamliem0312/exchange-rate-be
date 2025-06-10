@@ -201,7 +201,7 @@ class SyncExchangeRate
 
         foreach ($exchangeRateList as $exchangeRate) {
             if (in_array($exchangeRate['CCY'], self::CURRENCY_LIST)) {
-                $rate = floatval(str_replace(',', '', $exchangeRate['TRANSFER_SELL_RATE']));
+                $rate = floatval(str_replace(',', '', $exchangeRate['TRANSFER_SALE_RATE']));
                 $data[] = [
                     'rate' => $rate,
                     'fromCurrency' => $exchangeRate['CCY'],
@@ -1016,7 +1016,9 @@ class SyncExchangeRate
     {
         $url = "https://www.indovinabank.com.vn/vi/lookup/rates";
 
-        $html = $this->fetch($url, 'GET');
+        $html = $this->fetch($url, 'GET', [], [
+            'User-Agent' => 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1 Edg/134.0.0.0'
+        ]);
 
         if (!$html) {
             return [];
@@ -1043,7 +1045,7 @@ class SyncExchangeRate
                 'rate' => (float) str_replace([','], [''], $sell),
                 'fromCurrency' => $currency,
                 'toCurrency' => 'VND',
-                'bankCode' => 'IndoVinabank',
+                'bankCode' => 'Indovinabank',
             ];
         }
 
@@ -1378,7 +1380,7 @@ class SyncExchangeRate
             'Content-Type: ' . $options['contentType'] ?? 'application/json', // ['application/json, 'application/x-www-form-urlencoded', 'text/xml', ...]
         ]);
 
-        if ($options['contentType'] === 'token') {
+        if ($options['token']) {
             array_push($headers, 'Authorization: Basic ' . $options['token']);
         }
 
