@@ -545,8 +545,19 @@ class SyncExchangeRate
 
     public function getMSBExchangeRate(): array
     {
-        $date = Carbon::now()->addHours(7)->format('Y-m-d');
-        $url = "https://www.msb.com.vn/o/headless-ratecur/v1.0/latest-currency?dateTime=$date" . "T03:30:00Z";
+        $latestDateTimeUrl = 'https://www.msb.com.vn/o/headless-ratecur/v1.0/latest-batch/1';
+
+        $dateTimeResponse = $this->fetch($latestDateTimeUrl, 'GET', [], [
+            'User-Agent' => 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Mobile Safari/537.36 Edg/134.0.0.0'
+        ]);
+
+        if (!$dateTimeResponse) {
+            return [];
+        }
+
+        $datetime = $dateTimeResponse['items'][0]['dateTime'];
+
+        $url = "https://www.msb.com.vn/o/headless-ratecur/v1.0/latest-currency?dateTime=$datetime";
 
         $response = $this->fetch($url, 'GET', [], [
             'User-Agent' => 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Mobile Safari/537.36 Edg/134.0.0.0'
@@ -732,7 +743,7 @@ class SyncExchangeRate
                 preg_match('/\((.*?)\)/', $currency, $matches);
                 $currencyCode = $matches[1] ?? null;
                 $data[] = [
-                    'rate' => (float) str_replace([',', '.'], [' ', ','], $sell),
+                    'rate' => (float) str_replace(['.', ','], ['', '.'], $sell),
                     'fromCurrency' => $currencyCode,
                     'toCurrency' => 'VND',
                     'bankCode' => 'NamAbank',
@@ -777,7 +788,7 @@ class SyncExchangeRate
                     'rate' => (float) str_replace(['.', ','], ['', '.'], $sell),
                     'fromCurrency' => $currency,
                     'toCurrency' => 'VND',
-                    'bankCode' => 'NamAbank',
+                    'bankCode' => 'NCB',
                 ];
             }
         }
