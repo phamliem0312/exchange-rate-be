@@ -30,7 +30,7 @@ class SyncExchangeRate
         'VietAbank',
         'Vietcapitalbank',
         'Kienlongbank',
-        'BIDV',
+        'BIDV', // loi
         'Vietinbank',
         'GPbank',
         'HSBC',
@@ -38,7 +38,8 @@ class SyncExchangeRate
         'VRbank',
         'Baovietbank',
         'HongLeongbank',
-        'Indovinabank',
+        'Indovinabank', // loi
+        'Sacombank',
     ];
 
     const CURRENCY_LIST = [
@@ -855,6 +856,39 @@ class SyncExchangeRate
                     'fromCurrency' => $exchangeRate['currencyCode'],
                     'toCurrency' => 'VND',
                     'bankCode' => 'PVCombank',
+                ];
+            }
+        }
+
+        return $data;
+    }
+
+    public function getSacombankExchangeRate(): array
+    {
+        $url = "https://www.sacombank.com.vn/cong-cu/ty-gia/_jcr_content.sacom.exchange-rate.latest.json";
+
+        $response = $this->fetch($url);
+
+        if (!$response) {
+            $response = $this->fetch($url);
+            
+            if (!$response) {
+                return [];
+            }
+        }
+
+        $exchangeRateList = $response['data'] ?? [];
+
+        $data = [];
+
+        foreach ($exchangeRateList as $exchangeRate) {
+            if (in_array($exchangeRate['currencyCode'], self::CURRENCY_LIST)) {
+                $rate = $exchangeRate['offerInTransfer'];
+                $data[] = [
+                    'rate' => $rate,
+                    'fromCurrency' => $exchangeRate['currencyCode'],
+                    'toCurrency' => 'VND',
+                    'bankCode' => 'Sacombank',
                 ];
             }
         }
