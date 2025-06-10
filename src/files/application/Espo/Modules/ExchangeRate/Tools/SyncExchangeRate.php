@@ -541,7 +541,7 @@ class SyncExchangeRate
             'User-Agent' => 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Mobile Safari/537.36 Edg/134.0.0.0'
         ]);
 
-        if (!$response) {
+        if (!$dateTimeResponse) {
             return [];
         }
 
