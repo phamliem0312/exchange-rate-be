@@ -778,7 +778,7 @@ class SyncExchangeRate
                     'rate' => (float) str_replace(['.', ','], ['', '.'], $sell),
                     'fromCurrency' => $currency,
                     'toCurrency' => 'VND',
-                    'bankCode' => 'NamAbank',
+                    'bankCode' => 'NCB',
                 ];
             }
         }
