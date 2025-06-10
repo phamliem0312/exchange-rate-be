@@ -374,7 +374,7 @@ class SyncExchangeRate
 
     public function getACBExchangeRate(): array
     {
-        $date = Carbon::now()->addHours(7)->format('Y-m-d');
+        $date = Carbon::now()->addHours(7)->format('Y-m-dTH:i:s');
         $url = "https://acb.com.vn/api/front/v1/currency?currency=VND&effectiveDateTime=$date";
 
         $response = $this->fetch($url);
@@ -411,7 +411,7 @@ class SyncExchangeRate
         $date = Carbon::now()->addHours(7)->format('d/m/Y');
         $url = "https://abbank.vn/thong-tin/ty-gia-ngoai-te-abbank.html/ajax/exchange-rate-currency-detail";
 
-        $response = $this->fetch($url, 'POST', "date=$date&index=0", [
+        $response = $this->fetch($url, 'POST', "date=$date", [
             'contentType' => 'application/x-www-form-urlencoded',
         ]);
 
@@ -438,7 +438,7 @@ class SyncExchangeRate
                 $currency = trim($cells->item(0)->textContent);
                 $sellTransfer = str_replace(',', '', trim($cells->item(3)->textContent));
 
-                if (strpos($currency, 'USD (<50$)') !== false) {
+                if (strpos($currency, '(>50$)') != false) {
                     $exchangeRateList[] = [
                         'currency' => 'USD',
                         'exchangeRate' => (float) str_replace(',', '', $sellTransfer),
@@ -472,10 +472,20 @@ class SyncExchangeRate
     public function getEximbankExchangeRate(): array
     {
         $date = Carbon::now()->addHours(7)->format('Ymd');
-        $url = "https://eximbank.com.vn/api/front/v1/exchange-rate?strNoticeday=$date&strBRCD=1000&strQuoteCNT=20";
+        $quoteUrl = "https://eximbank.com.vn/api/front/v1/quote-count-list?strNoticeday=$date&strBRCD=1000";
 
+        $quoteResponse = $this->fetch($quoteUrl);
+
+        if (!$quoteResponse) {
+            return [];
+        }
+
+        $quote = $quoteResponse[0]['QUOTECNT'];
+
+        $url = "https://eximbank.com.vn/api/front/v1/exchange-rate?strNoticeday=$date&strBRCD=1000&strQuoteCNT=$quote";
+        
         $response = $this->fetch($url);
-
+        
         if (!$response) {
             return [];
         }
@@ -906,7 +916,7 @@ class SyncExchangeRate
         $date = Carbon::now()->format('d/m/Y');
         $url = "https://vietabank.com.vn/Currency/Filter";
 
-        $html = $this->fetch($url, 'POST', "dateSearch=$date&timeSearch=13", [
+        $html = $this->fetch($url, 'POST', "dateSearch=$date", [
             'contentType' => 'application/x-www-form-urlencoded; charset=UTF-8',
         ]);
 
@@ -1090,7 +1100,7 @@ class SyncExchangeRate
             $cols = $row->getElementsByTagName('td');
             preg_match('/\((.*?)\)/', trim($th->item(0)->textContent), $matches);
             $currency = $matches[1];
-            $sell = trim($cols->item(4)->textContent);
+            $sell = trim($cols->item(3)->textContent);
             $data[] = [
                 'rate' => (float) str_replace(['.', ','], ['', '.'], $sell),
                 'fromCurrency' => $currency,
