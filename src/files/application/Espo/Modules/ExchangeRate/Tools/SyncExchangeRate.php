@@ -40,6 +40,7 @@ class SyncExchangeRate
         'HongLeongbank',
         'Indovinabank', // loi
         'Sacombank',
+        'Seabank',
     ];
 
     const CURRENCY_LIST = [
@@ -368,6 +369,46 @@ class SyncExchangeRate
                     'fromCurrency' => $exchangeRate['currency_code'],
                     'toCurrency' => 'VND',
                     'bankCode' => 'Vietinbank',
+                ];
+            }
+        }
+
+        return $data;
+    }
+
+    public function getSeabankExchangeRate(): array
+    {
+        $url = 'https://seabank.com.vn/cong-cu-tien-ich/ty-gia?_rsc=1tcva';
+
+        $response = $this->fetch($url, 'GET', [], [
+            'user-agent' => 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Mobile Safari/537.36 Edg/134.0.0.0',
+            'rsc' => 1
+        ]);
+
+        if (!$response) {
+            return [];
+        }
+
+        $pattern = '/\{"listExchangeRate":\{"details":\[.*?\],"ResponseCode":"00"\}\}/';
+        preg_match($pattern, $response, $matches);
+
+        if (empty($matches)) {
+            return [];
+        }
+        $match = json_decode($matches[0], true);
+
+        $exchangeRateList = $match['listExchangeRate']['details'] ?? [];
+
+        $data = [];
+
+        foreach ($exchangeRateList as $exchangeRate) {
+            if (in_array($exchangeRate['currency'], self::CURRENCY_LIST)) {
+                $rate = (float) $exchangeRate['transferSell'];
+                $data[] = [
+                    'rate' => $rate,
+                    'fromCurrency' => $exchangeRate['currency'],
+                    'toCurrency' => 'VND',
+                    'bankCode' => 'Seabank',
                 ];
             }
         }
